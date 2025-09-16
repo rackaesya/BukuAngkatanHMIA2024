@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Kaderisasi - HMIA ITERA 2024</title>
+    
+    <style>
+        /* CSS UTAMA */
+        :root {
+            --primary-color: #003366;
+            --secondary-color: #FFD700;
+            --background-color: #f0f2f5;
+            --text-color: #333;
+            --card-bg: #ffffff;
+            --success-color: #28a745;
+            --error-color: #dc3545;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+        
+        .hidden { display: none !important; }
+
+        /* HALAMAN LOGIN */
+        .auth-page {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--primary-color), #0055a5);
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .auth-container {
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+        .auth-container .logo { width: 100px; margin-bottom: 15px; }
+        .auth-title {
+            color: #444;
+            font-weight: 600;
+            line-height: 1.4;
+            margin-bottom: 15px;
+            font-size: 1em;
+            text-transform: uppercase;
+        }
+        .auth-container h2 { margin-top: 0; margin-bottom: 20px; color: var(--primary-color); }
+        .auth-form input {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .auth-form button {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        .auth-container p { margin-top: 20px; font-size: 0.9em; }
+        .auth-container a { color: var(--primary-color); text-decoration: none; font-weight: bold; }
+        .status-message { margin-top: 15px; font-size: 0.9em; font-weight: bold; }
+        .error { color: var(--error-color); }
+        .success { color: var(--success-color); }
+
+        /* HALAMAN APLIKASI UTAMA */
+        .app-page { min-height: 100vh; }
+        header { 
+            background-color: var(--primary-color); color: white; padding: 15px 30px; 
+            display: flex; justify-content: space-between; align-items: center; 
+            border-bottom: 4px solid var(--secondary-color); 
+        }
+        .header-branding {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .header-branding .logo { width: 60px; height: auto; }
+        .header-branding .header-title {
+            font-size: 1.1em;
+            font-weight: 600;
+            line-height: 1.2;
+        }
+        nav { display: flex; gap: 15px; }
+        nav a { color: white; text-decoration: none; padding: 8px 15px; border-radius: 5px; transition: background-color 0.3s; white-space: nowrap; }
+        nav a:hover, nav a.active { background-color: rgba(255, 255, 255, 0.2); }
+        #logout-btn { background-color: var(--error-color); cursor: pointer; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        
+        @media (max-width: 992px) {
+            .header-branding {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+            .header-branding .header-title {
+                font-size: 0.8em;
+                line-height: 1.1;
+            }
+            header { padding: 10px 15px; }
+            nav { gap: 5px; }
+            nav a { padding: 8px 10px; font-size: 0.9em; }
+        }
+
+        @media (max-width: 576px) {
+            .header-branding .header-title { display: none; }
+            .header-branding { flex-direction: row; }
+        }
+        
+        .content-section { background-color: var(--card-bg); padding: 30px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+        .content-section h2 { color: var(--primary-color); border-bottom: 2px solid var(--secondary-color); padding-bottom: 10px; margin-top: 0;}
+        .interview-form .form-group { margin-bottom: 20px; }
+        .interview-form label { display: block; margin-bottom: 5px; font-weight: bold; }
+        .interview-form input, .interview-form textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
+        .interview-form textarea { min-height: 150px; resize: vertical; }
+        .interview-form button { padding: 12px 25px; background-color: var(--success-color); color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
+        .profile-details p { margin: 8px 0; }
+        .history-list { list-style: none; padding: 0; margin-top: 20px; }
+        .history-item { border: 1px solid #eee; border-left: 5px solid var(--primary-color); padding: 15px; margin-bottom: 15px; border-radius: 5px; }
+        .kader-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 25px; margin-top: 20px; }
+        .kader-card { background-color: #fff; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); overflow: hidden; text-align: center; transition: transform 0.3s, box-shadow 0.3s; text-decoration: none; color: var(--text-color); }
+        .kader-card img { width: 100%; height: 250px; object-fit: cover; }
+        .kader-card-info { padding: 15px; }
+    </style>
+</head>
+<body>
+
+    <div id="login-page" class="auth-page">
+        <div class="auth-container">
+            <img src="HMIA logo.jpg" alt="Logo HMIA" class="logo">
+            
+            <div class="auth-title">
+                HIMPUNAN MAHASISWA<br>INSTRUMENTASI DAN AUTOMASI<br>INSTITUT TEKNOLOGI SUMATERA
+            </div>
+            
+            <h2>Portal Kaderisasi 2024</h2>
+            <form id="login-form" class="auth-form">
+                <input type="text" id="login-nim" placeholder="NIM" required>
+                <input type="password" id="login-password" placeholder="Password" required>
+                <button type="submit">Login</button>
+            </form>
+            <p id="login-status" class="status-message error hidden"></p>
+        </div>
+    </div>
+
+    <div id="app-page" class="app-page hidden">
+        <header>
+            <div class="header-branding">
+                <img src="HMIA logo.jpg" alt="Logo HMIA" class="logo">
+                <div class="header-title">HIMPUNAN MAHASISWA<br>INSTRUMENTASI DAN AUTOMASI ITERA</div>
+            </div>
+            <nav id="app-nav"></nav>
+        </header>
+        <main id="app-main-content" class="container"></main>
+    </div>
+
+
+    <script>
+        // Database akun pengguna
+        let userDatabase = [];
+        let interviewDatabase = [];
+        
+        // Fungsi untuk membuat NIM dan password acak
+        function generateUsers() {
+            const users = [
+                { nim: "121490001", password: "staffpassword", nama: "", role: "staff", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Staff+1" },
+                { nim: "121490002", password: "staffpassword2", nama: "", role: "staff", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Staff+2" },
+                { nim: "124490001", password: "kader24-4154", nama: "", role: "kader", ttl: "Bandar Lampung, 15 April 2005", asal: "Bandar Lampung", kelompok: "A1", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Rasyid" },
+                { nim: "124490002", password: "kader24-9740", nama: "", role: "kader", ttl: "Bogor, 20 Februari 2006", asal: "Bogor", kelompok: "A2", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Dimas" },
+                { nim: "124490003", password: "kader24-1802", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Fauzan" },
+                { nim: "124490004", password: "kader24-7127", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Nadia" },
+                { nim: "124490005", password: "kader24-7368", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Budi" },
+                { nim: "124490006", password: "kader24-9556", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Sinta" },
+                { nim: "124490007", password: "kader24-5051", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Aji" },
+                { nim: "124490008", password: "kader24-8797", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Dewi" },
+                { nim: "124490009", password: "kader24-5170", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Reza" },
+                { nim: "124490010", password: "kader24-5397", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Putri" },
+                { nim: "124490011", password: "kader24-4195", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Rahmat" },
+                { nim: "124490012", password: "kader24-2310", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Tia" },
+                { nim: "124490013", password: "kader24-3924", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Yoga" },
+                { nim: "124490014", password: "kader24-1459", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Lina" },
+                { nim: "124490015", password: "kader24-9160", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Fajar" },
+                { nim: "124490016", password: "kader24-6814", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Laras" },
+                { nim: "124490017", password: "kader24-2346", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Dicky" },
+                { nim: "124490018", password: "kader24-4734", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Nina" },
+                { nim: "124490019", password: "kader24-1528", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Eko" },
+                { nim: "124490020", password: "kader24-5857", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Rani" },
+                { nim: "124490021", password: "kader24-6922", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Adit" },
+                { nim: "124490022", password: "kader24-6530", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Dinda" },
+                { nim: "124490023", password: "kader24-3982", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Gilang" },
+                { nim: "124490024", password: "kader24-2895", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Sari" },
+                { nim: "124490025", password: "kader24-6679", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Fahmi" },
+                { nim: "124490026", password: "kader24-9193", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Mira" },
+                { nim: "124490027", password: "kader24-3650", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Irfan" },
+                { nim: "124490028", password: "kader24-7449", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Amelia" },
+                { nim: "124490029", password: "kader24-1136", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Rizky" },
+                { nim: "124490030", password: "kader24-7037", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Wulan" },
+                { nim: "124490031", password: "kader24-7923", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Rian" },
+                { nim: "124490032", password: "kader24-6180", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Yuli" },
+                { nim: "124490033", password: "kader24-2976", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Ivan" },
+                { nim: "124490034", password: "kader24-7741", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Eka" },
+                { nim: "124490035", password: "kader24-3994", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Rio" },
+                { nim: "124490036", password: "kader24-4293", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Linda" },
+                { nim: "124490037", password: "kader24-9979", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Doni" },
+                { nim: "124490038", password: "kader24-6962", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Cintya" },
+                { nim: "124490039", password: "kader24-7159", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Ferry" },
+                { nim: "124490040", password: "kader24-5727", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Diana" },
+                { nim: "124490041", password: "kader24-5521", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Ari" },
+                { nim: "124490042", password: "kader24-1262", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Ika" },
+                { nim: "124490043", password: "kader24-5817", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Dedi" },
+                { nim: "124490044", password: "kader24-7696", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Lisa" },
+                { nim: "124490045", password: "kader24-8808", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Agus" },
+                { nim: "124490046", password: "kader24-6074", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Indah" },
+                { nim: "124490047", password: "kader24-5233", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Surya" },
+                { nim: "124490048", password: "kader24-8637", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Siti" },
+                { nim: "124490049", password: "kader24-6302", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Danang" },
+                { nim: "124490050", password: "kader24-5615", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Dinda" },
+                { nim: "124490051", password: "kader24-6275", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Sandi" },
+                { nim: "124490052", password: "kader24-7179", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Bella" },
+                { nim: "124490053", password: "kader24-7122", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Farhan" },
+                { nim: "124490054", password: "kader24-8255", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Joko" },
+                { nim: "124490055", password: "kader24-1193", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Kiki" },
+                { nim: "124490056", password: "kader24-4529", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Siska" },
+                { nim: "124490057", password: "kader24-7460", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Heri" },
+                { nim: "124490058", password: "kader24-9293", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Jihan" },
+                { nim: "124490059", password: "kader24-9151", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Kevin" },
+                { nim: "124490060", password: "kader24-9603", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Aulia" },
+                { nim: "124490061", password: "kader24-3252", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Dian" },
+                { nim: "124490062", password: "kader24-5694", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Reno" },
+                { nim: "124490063", password: "kader24-8486", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Siti" },
+                { nim: "124490064", password: "kader24-3393", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Ahmad" },
+                { nim: "124490065", password: "kader24-7292", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Febri" },
+                { nim: "124490066", password: "kader24-4550", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Dinda" },
+                { nim: "124490067", password: "kader24-3783", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Ilham" },
+                { nim: "124490068", password: "kader24-3678", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Putra" },
+                { nim: "124490069", password: "kader24-3888", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Amir" },
+                { nim: "124490070", password: "kader24-7130", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Cindy" },
+                { nim: "124490071", password: "kader24-9165", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Rizki" },
+                { nim: "124490072", password: "kader24-4815", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Mita" },
+                { nim: "124490073", password: "kader24-6675", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Fauzi" },
+                { nim: "124490074", password: "kader24-6636", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Lita" },
+                { nim: "124490075", password: "kader24-4025", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Wahyu" },
+                { nim: "124490076", password: "kader24-3423", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Vira" },
+                { nim: "124490077", password: "kader24-5396", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Angga" },
+                { nim: "124490078", password: "kader24-4989", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Maya" },
+                { nim: "124490079", password: "kader24-9026", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Edo" },
+                { nim: "124490080", password: "kader24-5286", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Febri" },
+                { nim: "124490081", password: "kader24-4380", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Ayu" },
+                { nim: "124490082", password: "kader24-7248", nama: "", role: "kader", ttl: "", asal: "", kelompok: "", photo: "https://via.placeholder.com/150/003366/FFFFFF?text=Candra" }
+            ];
+            return users;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const loginPage = document.getElementById('login-page');
+            const appPage = document.getElementById('app-page');
+            const appNav = document.getElementById('app-nav');
+            
+            function init() {
+                if (!localStorage.getItem('users_initialized')) {
+                    userDatabase = generateUsers();
+                    localStorage.setItem('users', JSON.stringify(userDatabase));
+                    localStorage.setItem('users_initialized', true);
+                } else {
+                    userDatabase = JSON.parse(localStorage.getItem('users'));
+                }
+                loadDatabases();
+                checkLoginState();
+                
+                document.getElementById('login-form').addEventListener('submit', handleLogin);
+            }
+
+            function loadDatabases() {
+                interviewDatabase = JSON.parse(localStorage.getItem('interviews')) || [];
+            }
+
+            function saveInterviewDatabase() {
+                localStorage.setItem('interviews', JSON.stringify(interviewDatabase));
+            }
+            
+            function saveUserDatabase() {
+                localStorage.setItem('users', JSON.stringify(userDatabase));
+            }
+
+            function checkLoginState() {
+                const currentUserNIM = sessionStorage.getItem('currentUserNIM');
+                if (currentUserNIM) {
+                    showAppPage();
+                } else {
+                    showLoginPage();
+                }
+            }
+
+            function showLoginPage() {
+                loginPage.classList.remove('hidden');
+                appPage.classList.add('hidden');
+            }
+
+            function showAppPage() {
+                loginPage.classList.add('hidden');
+                appPage.classList.remove('hidden');
+                renderNavigation();
+                
+                appNav.addEventListener('click', (e) => {
+                    if (e.target.matches('.nav-link')) {
+                        e.preventDefault();
+                        const targetId = e.target.getAttribute('data-target');
+                        renderAppContent(targetId);
+                        appNav.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                        e.target.classList.add('active');
+                    }
+                });
+                
+                const logoutBtn = document.getElementById('logout-btn');
+                if (logoutBtn) {
+                    logoutBtn.addEventListener('click', handleLogout);
+                }
+
+                const currentUserNIM = sessionStorage.getItem('currentUserNIM');
+                const currentUser = userDatabase.find(u => u.nim === currentUserNIM);
+                if (currentUser) {
+                    if (currentUser.role === 'kader') {
+                        renderAppContent('wawancara-content');
+                    } else if (currentUser.role === 'staff') {
+                        renderAppContent('profil-staff-content');
+                    }
+                }
+            }
+
+            function handleLogin(e) {
+                e.preventDefault();
+                const nim = document.getElementById('login-nim').value;
+                const password = document.getElementById('login-password').value;
+                const status = document.getElementById('login-status');
+                
+                const user = userDatabase.find(u => u.nim === nim && u.password === password);
+                
+                if (user) {
+                    sessionStorage.setItem('currentUserNIM', user.nim);
+                    showAppPage();
+                } else {
+                    status.textContent = "NIM atau Password salah!";
+                    status.classList.remove('hidden');
+                }
+            }
+            
+            function handleLogout() {
+                sessionStorage.removeItem('currentUserNIM');
+                showLoginPage();
+            }
+            
+            function handleProfileUpdate(e) {
+                e.preventDefault();
+                const nim = document.getElementById('update-nim').value;
+                const nama = document.getElementById('update-nama').value;
+                const ttl = document.getElementById('update-ttl').value;
+                const asal = document.getElementById('update-asal').value;
+                const kelompok = document.getElementById('update-kelompok').value;
+                
+                const userIndex = userDatabase.findIndex(u => u.nim === nim);
+                if (userIndex !== -1) {
+                    userDatabase[userIndex].nama = nama;
+                    userDatabase[userIndex].ttl = ttl;
+                    userDatabase[userIndex].asal = asal;
+                    userDatabase[userIndex].kelompok = kelompok;
+                    saveUserDatabase();
+                    
+                    const statusMessage = document.getElementById('update-status');
+                    statusMessage.textContent = 'Profil berhasil diperbarui!';
+                    statusMessage.className = 'status-message success';
+                    setTimeout(() => {
+                        statusMessage.textContent = '';
+                        statusMessage.className = 'status-message';
+                    }, 3000);
+                }
+            }
+
+            function renderNavigation() {
+                const currentUserNIM = sessionStorage.getItem('currentUserNIM');
+                const currentUser = userDatabase.find(u => u.nim === currentUserNIM);
+                let navHTML = '';
+
+                if (currentUser && currentUser.role === 'kader') {
+                    navHTML = `
+                        <a href="#" class="nav-link active" data-target="wawancara-content">Input Wawancara</a>
+                        <a href="#" class="nav-link" data-target="profil-content">Buku Angkatan</a>
+                        <a href="#" class="nav-link" data-target="update-profil-content">Update Profil</a>
+                        <a href="#" class="nav-link" data-target="buku-angkatan-content">Foto Angkatan 2024</a>
+                        <a href="#" id="logout-btn">Logout</a>
+                    `;
+                } else if (currentUser && currentUser.role === 'staff') {
+                    navHTML = `
+                        <a href="#" class="nav-link active" data-target="profil-staff-content">Histori Wawancara</a>
+                        <a href="#" class="nav-link" data-target="buku-angkatan-content">Buku Angkatan</a>
+                        <a href="#" id="logout-btn">Logout</a>
+                    `;
+                }
+                appNav.innerHTML = navHTML;
+            }
+            
+            function handleInterviewSubmit(e) {
+                e.preventDefault();
+                const form = e.target;
+                const status = form.querySelector('#submit-status');
+                const currentUserNIM = sessionStorage.getItem('currentUserNIM');
+                const newInterview = {
+                    submittedBy: currentUserNIM,
+                    timestamp: new Date().toISOString(),
+                    katingName: form.querySelector('#kating-name').value,
+                    katingNim: form.querySelector('#kating-nim').value,
+                    location: form.querySelector('#interview-location').value,
+                    result: form.querySelector('#interview-result').value,
+                };
+                interviewDatabase.push(newInterview);
+                saveInterviewDatabase();
+                status.textContent = 'Data berhasil disubmit!';
+                status.className = 'status-message success';
+                form.reset();
+                setTimeout(() => { status.textContent = '', status.className = 'status-message'; }, 3000);
+            }
+
+            function renderAppContent(targetId) {
+                const mainContent = document.getElementById('app-main-content');
+                const currentUserNIM = sessionStorage.getItem('currentUserNIM');
+                const currentUser = userDatabase.find(u => u.nim === currentUserNIM);
+                let contentHTML = '';
+
+                switch (targetId) {
+                    case 'wawancara-content':
+                        if (currentUser.role === 'kader') {
+                            contentHTML = `
+                                <section class="content-section">
+                                    <h2>Input Hasil Wawancara</h2>
+                                    <form id="interview-form" class="interview-form">
+                                        <div class="form-group"><label for="kating-name">Nama Kating</label><input type="text" id="kating-name" required></div>
+                                        <div class="form-group"><label for="kating-nim">NIM Kating</label><input type="text" id="kating-nim" required></div>
+                                        <div class="form-group"><label for="interview-location">Tempat Wawancara</label><input type="text" id="interview-location" required></div>
+                                        <div class="form-group"><label for="interview-result">Hasil Wawancara</label><textarea id="interview-result" required></textarea></div>
+                                        <button type="submit">Submit Data</button>
+                                        <p id="submit-status" class="status-message"></p>
+                                    </form>
+                                </section>
+                            `;
+                            mainContent.innerHTML = contentHTML;
+                            document.getElementById('interview-form').addEventListener('submit', handleInterviewSubmit);
+                        }
+                        break;
+                    case 'profil-content':
+                        if (currentUser.role === 'kader') {
+                            const userInterviews = interviewDatabase.filter(iv => iv.submittedBy === currentUserNIM).reverse();
+                            let historyHTML = '<p>Anda belum menginput data wawancara.</p>';
+                            if (userInterviews.length > 0) {
+                                historyHTML = userInterviews.map(iv => {
+                                    const date = new Date(iv.timestamp).toLocaleString('id-ID');
+                                    return `<li class="history-item">
+                                        <p><strong>Wawancara dengan ${iv.katingName} (${iv.katingNim})</strong></p>
+                                        <p style="font-size:0.9em; color:#666;">Di ${iv.location} - ${date}</p>
+                                        <pre style="white-space:pre-wrap; font-family:inherit;">${iv.result}</pre>
+                                    </li>`;
+                                }).join('');
+                            }
+                            contentHTML = `
+                                <section class="content-section">
+                                    <h2>Profil & Histori Wawancara</h2>
+                                    <div class="profile-details">
+                                        <p><strong>Nama:</strong> ${currentUser.nama || 'Belum diisi'}</p>
+                                        <p><strong>NIM:</strong> ${currentUser.nim}</p>
+                                        <p><strong>TTL:</strong> ${currentUser.ttl || 'Belum diisi'}</p>
+                                        <p><strong>Asal:</strong> ${currentUser.asal || 'Belum diisi'}</p>
+                                        <p><strong>Kelompok:</strong> ${currentUser.kelompok || 'Belum diisi'}</p>
+                                    </div>
+                                    <h3 style="margin-top:30px;">Histori Input Wawancara</h3>
+                                    <ul class="history-list">${historyHTML}</ul>
+                                </section>
+                            `;
+                            mainContent.innerHTML = contentHTML;
+                        }
+                        break;
+                    case 'update-profil-content':
+                        if (currentUser.role === 'kader') {
+                            contentHTML = `
+                                <section class="content-section">
+                                    <h2>Update Data Diri</h2>
+                                    <form id="update-profile-form" class="interview-form">
+                                        <div class="form-group">
+                                            <label for="update-nim">NIM</label>
+                                            <input type="text" id="update-nim" value="${currentUser.nim}" readonly>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="update-nama">Nama Lengkap</label>
+                                            <input type="text" id="update-nama" value="${currentUser.nama}" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="update-ttl">Tempat, Tanggal Lahir</label>
+                                            <input type="text" id="update-ttl" value="${currentUser.ttl}" placeholder="Contoh: Lampung, 11 Juni 2006" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="update-asal">Asal Daerah</label>
+                                            <input type="text" id="update-asal" value="${currentUser.asal}" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="update-kelompok">Kelompok</label>
+                                            <input type="text" id="update-kelompok" value="${currentUser.kelompok}" required>
+                                        </div>
+                                        <button type="submit">Update Profil</button>
+                                        <p id="update-status" class="status-message"></p>
+                                    </form>
+                                </section>
+                            `;
+                            mainContent.innerHTML = contentHTML;
+                            document.getElementById('update-profile-form').addEventListener('submit', handleProfileUpdate);
+                        }
+                        break;
+                    case 'profil-staff-content':
+                        if (currentUser.role === 'staff') {
+                            const userInterviews = interviewDatabase.filter(iv => iv.submittedBy !== currentUserNIM).reverse();
+                            let historyHTML = '<p>Belum ada data wawancara yang diinput oleh kader.</p>';
+                            if (userInterviews.length > 0) {
+                                historyHTML = userInterviews.map(iv => {
+                                    const date = new Date(iv.timestamp).toLocaleString('id-ID');
+                                    const kader = userDatabase.find(u => u.nim === iv.submittedBy);
+                                    return `<li class="history-item">
+                                        <p><strong>${kader ? kader.nama : 'Tidak Diketahui'} (${iv.submittedBy})</strong></p>
+                                        <p>Wawancara dengan: ${iv.katingName} (${iv.katingNim})</p>
+                                        <p style="font-size:0.9em; color:#666;">Di ${iv.location} - ${date}</p>
+                                        <pre style="white-space:pre-wrap; font-family:inherit;">${iv.result}</pre>
+                                    </li>`;
+                                }).join('');
+                            }
+                            contentHTML = `
+                                <section class="content-section">
+                                    <h2>Histori Wawancara Kader</h2>
+                                    <ul class="history-list">${historyHTML}</ul>
+                                </section>
+                            `;
+                            mainContent.innerHTML = contentHTML;
+                        }
+                        break;
+                    case 'buku-angkatan-content':
+                        const kaders = userDatabase.filter(user => user.role === 'kader');
+                        let kaderCardsHTML = kaders.map(kader => `
+                            <div class="kader-card">
+                                <img src="${kader.photo}" alt="Foto ${kader.nama}">
+                                <div class="kader-card-info">
+                                    <p><strong>${kader.nama || 'Belum diisi'}</strong></p>
+                                    <p style="font-size:0.9em; color:#555;">${kader.nim}</p>
+                                    <p style="font-size:0.9em; color:#555;">${kader.kelompok || 'Belum diisi'}</p>
+                                </div>
+                            </div>
+                        `).join('');
+
+                        contentHTML = `
+                            <section class="content-section">
+                                <h2>Angkatan 2024</h2>
+                                <div class="kader-grid">
+                                    ${kaderCardsHTML}
+                                </div>
+                            </section>
+                        `;
+                        mainContent.innerHTML = contentHTML;
+                        break;
+                    default:
+                        mainContent.innerHTML = `<section class="content-section"><h2>Selamat Datang!</h2><p>Pilih menu di atas untuk memulai.</p></section>`;
+                }
+            }
+
+            init();
+        });
+    </script>
+</body>
+</html>
